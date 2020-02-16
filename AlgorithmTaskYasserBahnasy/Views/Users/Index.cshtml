@@ -1,0 +1,64 @@
+﻿@model IEnumerable<AlgorithmTaskYasserBahnasy.Models.ApplicationUser>
+@using Microsoft.AspNet.Identity
+@using AlgorithmTaskYasserBahnasy.Models
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+@{
+    var db = new ApplicationDbContext();
+    var UserId = User.Identity.GetUserId();
+    var CurrentUser = db.Users.Where(a => a.Id == UserId).SingleOrDefault();
+}
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table table-stripped table-bordered table-hover">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.FullName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UserType)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UserName)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.FullName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UserType)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UserName)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Id }, new { @class = "btnLink" })
+            @Html.ActionLink("Details", "Details", new { id=item.Id }, new { @class = "btnLink" })
+            
+            @{
+                if (CurrentUser.UserType == "SuperAdmin")
+                {
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btnLink" })
+
+                }
+            }
+        </td>
+    </tr>
+}
+
+</table>

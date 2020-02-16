@@ -1,0 +1,25 @@
+﻿@model IEnumerable<AlgorithmTaskYasserBahnasy.Models.Depart>
+@{
+    ViewBag.Title = "Home Page";
+}
+
+
+@foreach (var items in Model)
+{
+    <div class="panel panel-info">
+        <div class="panel-heading"><h1>@Html.DisplayFor(modelItem => items.DepName)</h1></div>
+        
+        <div class="row panel-body">
+            <h5>Manged By : @Html.DisplayFor(modelItem => items.user.FullName)</h5>
+            <h6>Number Of Employees : @items.Employees.Count</h6>
+            @foreach (var sub in items.Employees)
+            {
+                <div class="col-md-3 thumbnail item">
+                    <img src="~/uploads/@sub.EmployeeImage" />
+                    <h3>@Html.DisplayFor(modelItem => sub.FirstName)</h3>
+                </div>
+            }
+        </div>
+    </div>
+}
+

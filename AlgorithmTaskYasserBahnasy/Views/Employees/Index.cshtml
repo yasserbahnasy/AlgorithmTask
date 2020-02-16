@@ -1,0 +1,111 @@
+﻿@model IEnumerable<AlgorithmTaskYasserBahnasy.Models.Employee>
+@using Microsoft.AspNet.Identity
+@using AlgorithmTaskYasserBahnasy.Models
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+@{
+    var db = new ApplicationDbContext();
+    var UserId = User.Identity.GetUserId();
+    var CurrentUser = db.Users.Where(a => a.Id == UserId).SingleOrDefault();
+}
+
+<h2>Index</h2>
+<div class="row">
+    Search in Employees
+    <input type="text" class="form-control" name="SearchName" id="SearchName" placeholder="Search Here" />
+</div>
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table table-stripped table-bordered table-hover" id="mytable">
+    <thead>
+        <tr>
+            <th>
+                Full Name
+            </th>
+            <th>
+                Manager Name
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Department.DepName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmployeeImage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DOB)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HiringDate)
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+@foreach (var item in Model)
+{
+    <tbody>
+        <tr>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Department.user.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Department.DepName)
+            </td>
+            <td>
+                <img src="~/Uploads/@Html.DisplayFor(modelItem => item.EmployeeImage)" class="thumbnail" width="100px" height="100px" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DOB)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HiringDate)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.id } , new { @class = "btnLink" })
+                @Html.ActionLink("Details", "Details", new { id = item.id }, new { @class = "btnLink" })
+
+                @{
+                    if (CurrentUser.UserType == "SuperAdmin")
+                    {
+                        <a onclick="DeleteEmp(this)" data-content="@item.id" class="btnLink">Delete</a>
+                        
+                    }
+                }
+            </td>
+        </tr>
+    </tbody>
+  }
+
+</table>
+
+<div class="modal fade login-modal in" id="DeleteEmployee" role="dialog" style="z-index: 9999; top: 20%;">
+    <div class="modal-backdrop fade in"></div>
+    <div class="modal-dialog" style="z-index: 9999;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Employee</h4>
+            </div>
+            <div class="modal-body p-t-0">
+                <div class="media add_rating_box">
+                    <div class="media-body">
+                        @using(Html.BeginForm("Delete", "Employees",  FormMethod.Post, new { id = "deleteE" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="EmployeeID" id="EmployeeID" value="" />
+                            <p style="color: #0c5c84;font-size: 20px;">do you want to delete this employee!!!</p>
+                            <a class="btnLink" onclick="CloseDiv()" ><i class="fas fa-window-close"></i> No</a>
+                            <a class="btnLink" href="Javascript:document.getElementById('deleteE').submit()"><i class="far fa-trash-alt"></i> Yes</a>
+                         }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
